@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Página de Zueira — Cuidado com o riso</title>
+  <meta name="description" content="Uma página divertida de brincadeira (zueira) pronta para hospedar em HTTPS." />
+  <style>
+    /* Reset simples */
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background: linear-gradient(135deg,#0f172a 0%, #0ea5a4 50%, #7c3aed 100%);
+      color:#fff;
+      display:flex;align-items:center;justify-content:center;
+      padding:24px;
+    }
+
+    .card{
+      width:100%;max-width:960px;background:rgba(255,255,255,0.06);backdrop-filter: blur(6px);
+      border-radius:20px;padding:28px;box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      border:1px solid rgba(255,255,255,0.06);
+    }
+
+    header{display:flex;gap:16px;align-items:center}
+    .logo{
+      width:84px;height:84px;border-radius:14px;display:grid;place-items:center;font-weight:800;
+      font-size:28px;background:linear-gradient(135deg,#fff2 0%,#fff1 100%);color:#0b1220
+    }
+
+    h1{font-size:2rem;margin-bottom:6px}
+    p.lead{opacity:0.9;margin-bottom:16px}
+
+    .controls{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0}
+    button{
+      background:linear-gradient(90deg,#ffb86b,#ff6b6b);border:0;padding:12px 16px;border-radius:12px;
+      cursor:pointer;font-weight:700;box-shadow:0 6px 18px rgba(255,107,107,0.18);
+    }
+    button.ghost{background:transparent;border:1px solid rgba(255,255,255,0.12);box-shadow:none}
+
+    .mosaic{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-top:14px}
+    .tile{background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(0,0,0,0.05));padding:8px;border-radius:12px;overflow:hidden;text-align:center}
+    .tile img{width:100%;height:110px;object-fit:cover;border-radius:8px}
+    .tile small{display:block;margin-top:8px;opacity:0.9}
+
+    footer{margin-top:18px;opacity:0.85;font-size:13px}
+
+    /* confetti elements */
+    .confetti-piece{position:fixed;will-change:transform;pointer-events:none}
+
+    /* fun animated banner */
+    .banner{margin:18px 0;padding:10px;border-radius:12px;background:linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));display:flex;justify-content:space-between;align-items:center}
+    .ticker{font-weight:800;letter-spacing:1px}
+
+    @keyframes wiggle{0%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}100%{transform:rotate(-6deg)}}
+    .wiggle{display:inline-block;animation:wiggle 900ms infinite}
+
+    /* small responsive touches */
+    @media (max-width:520px){h1{font-size:1.4rem}.logo{width:64px;height:64px;font-size:22px}}
+  </style>
+</head>
+<body>
+  <div class="card" role="main">
+    <header>
+      <div class="logo">Z!</div>
+      <div>
+        <h1>Página de Zueira</h1>
+        <p class="lead">Uma página simples, cheia de efeitos, memes aleatórios e pequenas trolls (tudo inocente). Perfeita pra zoar os amigos.</p>
+      </div>
+    </header>
+
+    <div class="banner">
+      <div class="ticker">Notícias importantes: hoje é dia de <span class="wiggle">zueira</span> 🎉</div>
+      <div id="clock"></div>
+    </div>
+
+    <div class="controls">
+      <button id="startBtn">Iniciar Zueira</button>
+      <button id="soundBtn" class="ghost">Falar uma zoeira</button>
+      <button id="partyBtn">Confete!</button>
+      <button id="bgBtn" class="ghost">Mudar fundo</button>
+      <button id="downloadBtn">Salvar como imagem</button>
+    </div>
+
+    <section class="mosaic" id="mosaic">
+      <!-- imagens aleatórias -->
+      <div class="tile"><img src="https://picsum.photos/seed/1/800/600" alt="meme1"><small>Meme 1</small></div>
+      <div class="tile"><img src="https://picsum.photos/seed/2/800/600" alt="meme2"><small>Meme 2</small></div>
+      <div class="tile"><img src="https://picsum.photos/seed/3/800/600" alt="meme3"><small>Meme 3</small></div>
+      <div class="tile"><img src="https://picsum.photos/seed/4/800/600" alt="meme4"><small>Meme 4</small></div>
+    </section>
+
+    <footer>
+      <div>Feito com ❤️ pra quem gosta de zueira — copie, modifique e divirta-se. (Não use para maldade.)</div>
+    </footer>
+  </div>
+
+  <script>
+    // Relógio simples
+    const clock = document.getElementById('clock');
+    function updateClock(){
+      const d = new Date();
+      clock.textContent = d.toLocaleString();
+    }
+    setInterval(updateClock,1000); updateClock();
+
+    // Funções principais
+    const startBtn = document.getElementById('startBtn');
+    const soundBtn = document.getElementById('soundBtn');
+    const partyBtn = document.getElementById('partyBtn');
+    const bgBtn = document.getElementById('bgBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+
+    // gerar confete simples usando divs
+    function makeConfetti(){
+      const colors = ['#ff4757','#ffa502','#2ed573','#3742fa','#f368e0'];
+      for(let i=0;i<60;i++){
+        const el = document.createElement('div');
+        el.className='confetti-piece';
+        const size = Math.random()*10+6;
+        el.style.width = size+'px'; el.style.height = size+Math.random()*10+'px';
+        el.style.left = Math.random()*100+'%';
+        el.style.top = '-10%';
+        el.style.background = colors[Math.floor(Math.random()*colors.length)];
+        el.style.transform = 'rotate('+Math.random()*360+'deg)';
+        el.style.opacity = String(0.9);
+        document.body.appendChild(el);
+        const fall = el.animate([
+          {transform: 'translateY(0) rotate(0deg)', opacity:1},
+          {transform: 'translateY(110vh) rotate(600deg)', opacity:0.6}
+        ],{duration:2000+Math.random()*2000, easing:'cubic-bezier(.2,.7,.2,1)'});
+        fall.onfinish = ()=>el.remove();
+      }
+    }
+
+    // fala com TTS
+    function speak(text){
+      if(!('speechSynthesis' in window)) return alert('TTS não disponível neste navegador.');
+      const s = new SpeechSynthesisUtterance(text);
+      s.lang = 'pt-BR'; s.rate = 1; s.pitch = 1;
+      speechSynthesis.cancel(); speechSynthesis.speak(s);
+    }
+
+    // muda background (gradiente aleatório)
+    function randomGradient(){
+      const a = Math.floor(Math.random()*360);
+      const b = Math.floor(Math.random()*360);
+      document.body.style.background = `linear-gradient(135deg,hsl(${a} 70% 10%), hsl(${(a+90)%360} 60% 40%), hsl(${b} 70% 50%))`;
+    }
+
+    // captura screenshot simples (usa html2canvas-like approach com drawImage de <svg> via foreignObject)
+    async function capture(){
+      try{
+        const ns = new XMLSerializer();
+        const node = document.querySelector('.card');
+        const clone = node.cloneNode(true);
+        // remove confetti elements
+        clone.querySelectorAll('.confetti-piece')?.forEach(e=>e.remove());
+        const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='${node.offsetWidth}' height='${node.offsetHeight}'><foreignObject width='100%' height='100%'>${ns.serializeToString(clone)}</foreignObject></svg>`;
+        const blob = new Blob([svg],{type:'image/svg+xml;charset=utf-8'});
+        const url = URL.createObjectURL(blob);
+        const img = new Image();
+        img.onload = ()=>{
+          const canvas = document.createElement('canvas'); canvas.width = img.width; canvas.height = img.height;
+          const ctx = canvas.getContext('2d'); ctx.drawImage(img,0,0);
+          const data = canvas.toDataURL('image/png');
+          const a = document.createElement('a'); a.href=data; a.download='pagina-zueira.png'; a.click();
+          URL.revokeObjectURL(url);
+        };
+        img.src = url;
+      }catch(e){alert('Erro ao gerar imagem: '+e.message)}
+    }
+
+    startBtn.addEventListener('click', ()=>{
+      // mistura efeitos: confete + fala + troca de imagens
+      makeConfetti();
+      speak('Atenção! Começou a zueira! Segura essa risada.');
+      // trocar as imagens por outras aleatórias
+      document.querySelectorAll('#mosaic img').forEach((img,i)=>{
+        img.src = `https://picsum.photos/seed/${Math.floor(Math.random()*1000)}/800/600`;
+      });
+    });
+
+    soundBtn.addEventListener('click', ()=>{
+      const frases = [
+        'Olha a gaivota!',
+        'E o prêmio de melhor zueira vai para você!',
+        'Cuidado com a zoeira nivel hard',
+        'Alerta de meme: 100% de chance de risada'
+      ];
+      speak(frases[Math.floor(Math.random()*frases.length)]);
+    });
+
+    partyBtn.addEventListener('click', ()=>{makeConfetti();});
+    bgBtn.addEventListener('click', ()=>{randomGradient();});
+    downloadBtn.addEventListener('click', ()=>{capture();});
+
+    // easter egg: tecla Z ativa zueira automática
+    document.addEventListener('keydown', (e)=>{if(e.key.toLowerCase()==='z'){startBtn.click();}});
+
+    // acessibilidade: foco visível nos botões
+    document.querySelectorAll('button').forEach(b=>{b.addEventListener('focus',()=>b.style.outline='3px solid rgba(255,255,255,0.15)');b.addEventListener('blur',()=>b.style.outline='none')});
+
+  </script>
+</body>
+</html>
